@@ -33,11 +33,11 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Initialize Terraform
-        working-directory: awsdev
+        working-directory: dev
         run: terraform init
 
       - name: Apply Terraform
-        working-directory: awsdev
+        working-directory: dev
         run: terraform apply -auto-approve
 
   terraform-aws-prod:
@@ -58,9 +58,9 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Initialize Terraform
-        working-directory: awsprod
+        working-directory: prod
         run: terraform init
 
       - name: Apply Terraform
-        working-directory: awsprod
+        working-directory: prod
         run: terraform apply -auto-approve
