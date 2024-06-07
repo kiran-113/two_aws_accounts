@@ -36,7 +36,7 @@ jobs:
   
       - name: Initialize Terraform
         working-directory: dev
-        run: terraform init
+        run: terraform init -reconfigure
         
       - name: Terraform Plan
         id: plan
@@ -73,7 +73,7 @@ jobs:
 
       - name: Initialize Terraform
         working-directory: prod
-        run: terraform init
+        run: terraform init -reconfigure
         
       - name: Terraform Plan
         id: plan
