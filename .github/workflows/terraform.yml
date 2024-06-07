@@ -38,7 +38,7 @@ jobs:
 
       - name: Apply Terraform
         working-directory: dev
-        run: terraform apply -auto-approve
+        run: terraform destroy -auto-approve
 
   terraform-aws-prod:
     name: Deploying on PROD env
@@ -63,4 +63,4 @@ jobs:
 
       - name: Apply Terraform
         working-directory: prod
-        run: terraform apply -auto-approve
+        run: terraform destroy -auto-approve
