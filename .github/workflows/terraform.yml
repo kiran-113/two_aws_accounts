@@ -90,6 +90,8 @@ jobs:
       - name: Apply Terraform
         if: success()
         working-directory: prod
-        run: echo "tfplanprod-${{ github.sha }}-${{ github.run_id }}"
+        
         #run: terraform apply -auto-approve tfplanprod-${{ github.sha }}-${{ github.run_id }}
-        run: terraform destroy -auto-approve
+        run: | 
+          echo "tfplanprod-${{ github.sha }}-${{ github.run_id }}"
+          terraform destroy -auto-approve
