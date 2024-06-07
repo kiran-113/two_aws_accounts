@@ -53,7 +53,7 @@ jobs:
         if: success()
         working-directory: dev
         #run: terraform apply -auto-approve tfplan-${{ github.sha }}
-        run: terrafom destroy -auto-approve
+        run: terraform destroy -auto-approve
 
   terraform-aws-prod:
     name: Deploying on PROD env
@@ -91,4 +91,4 @@ jobs:
         if: success()
         working-directory: prod
         #run: terraform apply -auto-approve tfplanprod-${{ github.sha }}
-        run: terrafom destroy -auto-approve
+        run: terraform destroy -auto-approve
