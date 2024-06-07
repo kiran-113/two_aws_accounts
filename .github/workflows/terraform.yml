@@ -79,16 +79,17 @@ jobs:
       - name: Terraform Plan
         id: plan
         working-directory: prod
-        run: terraform plan -out=tfplanprod-${{ github.sha }}
+        run: terraform plan -out=tfplanprod-${{ github.sha }}-${{ github.run_id }}
 
       - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: terraform-plan-${{ github.sha }}
-          path: prod/tfplanprod-${{ github.sha }}
+          name: terraform-plan-${{ github.sha }}-${{ github.run_id }}
+          path: prod/tfplanprod-${{ github.sha }}-${{ github.run_id }}
 
       - name: Apply Terraform
         if: success()
         working-directory: prod
-        #run: terraform apply -auto-approve tfplanprod-${{ github.sha }}
+        run: echo "tfplanprod-${{ github.sha }}-${{ github.run_id }}"
+        #run: terraform apply -auto-approve tfplanprod-${{ github.sha }}-${{ github.run_id }}
         run: terraform destroy -auto-approve
