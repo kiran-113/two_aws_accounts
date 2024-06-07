@@ -35,12 +35,12 @@ jobs:
         uses: hashicorp/setup-terraform@v3
   
       - name: Initialize Terraform
-        working-directory: awsdev
+        working-directory: dev
         run: terraform init
         
       - name: Terraform Plan
         id: plan
-        working-directory: awsdev
+        working-directory: dev
         run: terraform plan -out=tfplan-${{ github.sha }}
 
       - name: Upload Plan Artifact
@@ -88,5 +88,5 @@ jobs:
 
       - name: Apply Terraform
         if: success()
-        working-directory: awsprod
+        working-directory: prod
         run: terraform apply -auto-approve tfplan-${{ github.sha }}
