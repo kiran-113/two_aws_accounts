@@ -9,6 +9,8 @@ env:
   AWS_REGION_2_PROD: "ap-south-1"
   AWS_ACCOUNT_ID_1_DEV: "730335175099" # Replace with your first AWS account ID
   AWS_ACCOUNT_ID_2_PROD: "666562444707" # Replace with your second AWS account ID
+  AWS_REGION_1_DEV_ROLE_NAME: "env_dev_oidc_github_role" # Replace with your DEV OIDC role name 
+  AWS_REGION_2_PROD_ROLE_NAME: "env_prod_oidc_github_role" # Replace with your PROD OIDC role name 
 
 permissions:
   id-token: write
@@ -26,7 +28,7 @@ jobs:
       - name: Configure AWS credentials DEV env
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID_1_DEV }}:role/env_dev_oidc_github_role # Replace with your IAM role ARN
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID_1_DEV }}:role/${{ env.AWS_REGION_1_DEV_ROLE_NAME }} # Replace with your IAM role ARN
           aws-region: ${{ env.AWS_REGION_1_DEV }}
       
       - name: Set up Terraform
@@ -36,9 +38,24 @@ jobs:
         working-directory: dev
         run: terraform init
 
+      - name: Terraform Plan
+        run: terraform plan -out=tfplandev
+      
+      - name: Upload Terraform plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplandev-${{ github.sha }}
+          path: tfplan
+      
+      - name: Download Terraform plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplandev-${{ github.sha }}
+          path: .    
+
       - name: Apply Terraform
         working-directory: dev
-        run: terraform destroy -auto-approve
+        run: terraform apply -auto-approve tfplandev
 
   terraform-aws-prod:
     name: Deploying on PROD env
@@ -51,7 +68,7 @@ jobs:
       - name: Configure AWS credentials for PROD env
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID_2_PROD }}:role/env_prod_oidc_github_role # Replace with your IAM role ARN
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID_2_PROD }}:role/${{ env.AWS_REGION_2_PROD_ROLE_NAME }} # Replace with your IAM role ARN
           aws-region: ${{ env.AWS_REGION_2_PROD }}
       
       - name: Set up Terraform
@@ -60,7 +77,22 @@ jobs:
       - name: Initialize Terraform
         working-directory: prod
         run: terraform init
-
+      
+      - name: Terraform Plan
+        run: terraform plan -out=tfplanprod
+      
+      - name: Upload Terraform plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplanprod-${{ github.sha }}
+          path: tfplan
+      
+      - name: Download Terraform plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplanprod-${{ github.sha }}
+          path: .    
+   
       - name: Apply Terraform
         working-directory: prod
-        run: terraform destroy -auto-approve
+        run: terraform apply -auto-approve tfplanprod
