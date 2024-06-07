@@ -47,11 +47,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan-${{ github.sha }}
-          path: awsdev/tfplan-${{ github.sha }}
+          path: dev/tfplan-${{ github.sha }}
 
       - name: Apply Terraform
         if: success()
-        working-directory: awsdev
+        working-directory: dev
         run: terraform apply -auto-approve tfplan-${{ github.sha }}
 
   terraform-aws-prod:
@@ -72,19 +72,19 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Initialize Terraform
-        working-directory: awsprod
+        working-directory: prod
         run: terraform init
         
       - name: Terraform Plan
         id: plan
-        working-directory: awsprod
+        working-directory: prod
         run: terraform plan -out=tfplan-${{ github.sha }}
 
       - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan-${{ github.sha }}
-          path: awsprod/tfplan-${{ github.sha }}
+          path: prod/tfplan-${{ github.sha }}
 
       - name: Apply Terraform
         if: success()
